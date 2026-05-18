@@ -1,13 +1,36 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>fullstack-labs</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixell River Employee Directory</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <img 
+        src="https://itsm-ace.ca/images/logo.svg" 
+        alt="Pixell River Financial Logo" 
+      />
+      <div class="header-text">
+        <h1>Pixell River Employee Directory</h1>
+        <p>Welcome! Browse our teams and employees below.</p>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- Employees will be injected here by JavaScript -->
+  </main>
+
+  <footer>
+    <p>Copyright &copy; Pixell River Financial <span id="current-year"></span></p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+
+</body>
 </html>
