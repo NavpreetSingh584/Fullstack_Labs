@@ -4,12 +4,10 @@ body {
   background-color: #f4f6f8;
   color: #222;
 }
-
 img {
   max-width: 180px;
   height: auto;
 }
-
 header,
 footer {
   text-align: center;
@@ -17,28 +15,42 @@ footer {
   color: white;
   padding: 20px;
 }
-
 main {
   max-width: 900px;
   margin: 30px auto;
   padding: 20px;
 }
-
 section {
   background-color: white;
   margin-bottom: 20px;
   padding: 18px;
   border-radius: 8px;
 }
-
 h2 {
   text-align: center;
 }
-
 h3 {
   color: #003b6f;
 }
-
 p {
   margin: 6px 0;
+}
+nav {
+  background-color: #002a52;
+  padding: 10px 20px;
+  display: flex;
+  gap: 20px;
+}
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+nav a:hover,
+nav a.active {
+  text-decoration: underline;
+}
+.org-row {
+  display: flex;
+  justify-content: space-between;
 }

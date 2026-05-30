@@ -1,7 +1,7 @@
 import { useState } from "react";
 import departments from "../data/employees.json";
 import type { Department } from "../interfaces/Employee";
-import AddEmployeeForm from "../components/AddEmployeeForm";
+import AddEmployeeForm from "./AddEmployeeForm";
 
 function Main() {
   const [departmentList, setDepartmentList] = useState<Department[]>(departments as Department[]);
