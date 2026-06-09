@@ -1,5 +1,5 @@
-import { useState } from "react";
 import type { Department } from "../interfaces/Employee";
+import { useFormInput } from "../hooks/useFormInput";
 
 interface Props {
   departments: Department[];
@@ -11,50 +11,45 @@ interface Props {
 }
 
 export default function AddEmployeeForm({ departments, onAddEmployee }: Props) {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [department, setDepartment] = useState(departments[0].name);
-  const [errors, setErrors] = useState<string[]>([]);
+  const firstNameInput = useFormInput("");
+  const lastNameInput = useFormInput("");
+  const departmentInput = useFormInput(departments[0]?.name ?? "");
 
   function handleSubmit() {
-    setErrors([]);
-    const newErrors: string[] = [];
+    const firstNameErrors = firstNameInput.validate((value) =>
+      value.trim().length < 3
+        ? ["First name must be at least 3 characters."]
+        : []
+    );
 
-    if (firstName.trim().length < 3) {
-      newErrors.push("First name must be at least 3 characters.");
-    }
+    if (firstNameErrors.length > 0) return;
 
-    if (newErrors.length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+    onAddEmployee(
+      firstNameInput.value.trim(),
+      lastNameInput.value.trim(),
+      departmentInput.value
+    );
 
-    onAddEmployee(firstName.trim(), lastName.trim(), department);
-    setFirstName("");
-    setLastName("");
-    setDepartment(departments[0].name);
+    firstNameInput.reset();
+    lastNameInput.reset();
+    departmentInput.reset(departments[0]?.name ?? "");
   }
 
   return (
     <div>
       <h2>Add New Employee</h2>
 
-      {errors.length > 0 && (
-        <ul>
-          {errors.map((err, i) => (
-            <li key={i} style={{ color: "red" }}>{err}</li>
-          ))}
-        </ul>
-      )}
-
       <div>
         <label htmlFor="firstName">First Name</label>
         <input
           id="firstName"
           type="text"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
+          value={firstNameInput.value}
+          onChange={firstNameInput.onChange}
         />
+        {firstNameInput.messages.map((msg, i) => (
+          <p key={i} style={{ color: "red" }}>{msg}</p>
+        ))}
       </div>
 
       <div>
@@ -62,24 +57,30 @@ export default function AddEmployeeForm({ departments, onAddEmployee }: Props) {
         <input
           id="lastName"
           type="text"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
+          value={lastNameInput.value}
+          onChange={lastNameInput.onChange}
         />
+        {lastNameInput.messages.map((msg, i) => (
+          <p key={i} style={{ color: "red" }}>{msg}</p>
+        ))}
       </div>
 
       <div>
         <label htmlFor="department">Department</label>
         <select
           id="department"
-          value={department}
-          onChange={(e) => setDepartment(e.target.value)}
+          value={departmentInput.value}
+          onChange={departmentInput.onChange}
         >
-          {departments.map((dept, i) => (
-            <option key={i} value={dept.name}>
+          {departments.map((dept) => (
+            <option key={dept.name} value={dept.name}>
               {dept.name}
             </option>
           ))}
         </select>
+        {departmentInput.messages.map((msg, i) => (
+          <p key={i} style={{ color: "red" }}>{msg}</p>
+        ))}
       </div>
 
       <button onClick={handleSubmit}>Add Employee</button>

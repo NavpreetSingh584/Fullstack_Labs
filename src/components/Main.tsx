@@ -1,23 +1,26 @@
 import { useState } from "react";
-import departments from "../data/employees.json";
 import type { Department } from "../interfaces/Employee";
+import employeeRepo from "../repositories/employeeRepo";
+import employeeService from "../services/employeeService";
 import AddEmployeeForm from "./AddEmployeeForm";
 
 function Main() {
-  const [departmentList, setDepartmentList] = useState<Department[]>(departments as Department[]);
+  const [departmentList, setDepartmentList] = useState<Department[]>(
+    () => employeeRepo.getDepartments()
+  );
 
   function handleAddEmployee(
     firstName: string,
     lastName: string,
     departmentName: string
   ) {
-    setDepartmentList((prev) =>
-      prev.map((dept) =>
-        dept.name === departmentName
-          ? { ...dept, employees: [...dept.employees, { firstName, lastName }] }
-          : dept
-      )
-    );
+    const result = employeeService.createEmployee(firstName, lastName, departmentName);
+
+    if (result.success && result.departments) {
+      setDepartmentList(result.departments);
+    } else {
+      console.error("Failed to add employee:", result.errors);
+    }
   }
 
   return (
