@@ -9,8 +9,10 @@ const organizationRepo = {
   },
 
   getRoleByName(role: string): Role | undefined {
-    return members.find((m) => m.role === role);
-  },
+  return members.find(
+    (m) => m.role.toLowerCase() === role.trim().toLowerCase()
+  );
+},
 
   createMember(
     firstName: string,

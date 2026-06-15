@@ -1,8 +1,29 @@
-import organizationData from "../data/organization.json";
+import { useState } from "react";
 import type { Role } from "../interfaces/Employee";
+import organizationRepo from "../repositories/organizationRepo";
+import organizationService from "../services/organizationService";
+import AddRoleForm from "./AddRoleForm";
 
 export default function Organization() {
-  const members: Role[] = organizationData as Role[];
+  const [members, setMembers] = useState<Role[]>(
+    () => organizationRepo.getMembers()
+  );
+  const [roleError, setRoleError] = useState<string[]>([]);
+
+  function handleAddMember(
+    firstName: string,
+    lastName: string,
+    role: string
+  ) {
+    const result = organizationService.createMember(firstName, lastName, role);
+
+    if (result.success && result.members) {
+      setMembers(result.members);
+      setRoleError([]);
+    } else {
+      setRoleError(result.errors?.role ?? []);
+    }
+  }
 
   return (
     <main>
@@ -13,6 +34,8 @@ export default function Organization() {
           <span>{member.role}</span>
         </section>
       ))}
+
+      <AddRoleForm onAddMember={handleAddMember} roleMessages={roleError} />
     </main>
   );
 }

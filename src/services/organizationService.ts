@@ -23,7 +23,12 @@ const organizationService = {
       errors.firstName = ["First name must be at least 3 characters."];
     }
 
-    // Validation 2: role must not already be occupied
+    // Validation 2: role cannot be empty
+    if (role.trim().length === 0) {
+      errors.role = ["Role cannot be empty."];
+    }
+
+    // Validation 3: role must not already be occupied (case-insensitive)
     const existingRole = organizationRepo.getRoleByName(role.trim());
     if (existingRole) {
       errors.role = [`The role "${role}" is already occupied.`];
