@@ -1,21 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Role } from "../interfaces/Employee";
-import organizationRepo from "../repositories/organizationRepo";
 import organizationService from "../services/organizationService";
 import AddRoleForm from "./AddRoleForm";
 
 export default function Organization() {
-  const [members, setMembers] = useState<Role[]>(
-    () => organizationRepo.getMembers()
-  );
+  const [members, setMembers] = useState<Role[]>([]);
   const [roleError, setRoleError] = useState<string[]>([]);
 
-  function handleAddMember(
+  useEffect(() => {
+    organizationService.getMembers().then(setMembers);
+  }, []);
+
+  async function handleAddMember(
     firstName: string,
     lastName: string,
     role: string
   ) {
-    const result = organizationService.createMember(firstName, lastName, role);
+    const result = await organizationService.createMember(
+      firstName,
+      lastName,
+      role
+    );
 
     if (result.success && result.members) {
       setMembers(result.members);

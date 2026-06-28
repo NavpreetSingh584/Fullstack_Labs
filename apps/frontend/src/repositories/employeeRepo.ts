@@ -1,37 +1,26 @@
-import type { Department, Employee } from "../interfaces/Employee";
-import initialData from "../data/employees.json";
+import type { Department } from "../interfaces/Employee";
 
-let departments: Department[] = initialData as Department[];
+const BASE_URL = "http://localhost:4000";
 
 const employeeRepo = {
-  getDepartments(): Department[] {
-    return departments.map((dept) => ({
-      ...dept,
-      employees: [...dept.employees],
-    }));
+  async getDepartments(): Promise<Department[]> {
+    const response = await fetch(`${BASE_URL}/employees`);
+    return response.json();
   },
 
-  getDepartmentByName(name: string): Department | undefined {
-    return departments.find((dept) => dept.name === name);
-  },
-
-  createEmployee(
+  async createEmployee(
     firstName: string,
     lastName: string,
     departmentName: string
-  ): Department[] | null {
-    const dept = departments.find((d) => d.name === departmentName);
-    if (!dept) return null;
+  ): Promise<Department[] | null> {
+    const response = await fetch(`${BASE_URL}/employees`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ firstName, lastName, departmentName }),
+    });
 
-    const newEmployee: Employee = { firstName, lastName };
-
-    departments = departments.map((d) =>
-      d.name === departmentName
-        ? { ...d, employees: [...d.employees, newEmployee] }
-        : d
-    );
-
-    return employeeRepo.getDepartments();
+    if (!response.ok) return null;
+    return response.json();
   },
 };
 

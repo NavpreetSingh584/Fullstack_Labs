@@ -1,27 +1,26 @@
 import type { Role } from "../interfaces/Employee";
-import initialData from "../data/organization.json";
 
-let members: Role[] = initialData as Role[];
+const BASE_URL = "http://localhost:4000";
 
 const organizationRepo = {
-  getMembers(): Role[] {
-    return [...members];
+  async getMembers(): Promise<Role[]> {
+    const response = await fetch(`${BASE_URL}/organization`);
+    return response.json();
   },
 
-  getRoleByName(role: string): Role | undefined {
-  return members.find(
-    (m) => m.role.toLowerCase() === role.trim().toLowerCase()
-  );
-},
-
-  createMember(
+  async createMember(
     firstName: string,
     lastName: string,
     role: string
-  ): Role[] {
-    const newMember: Role = { firstName, lastName, role };
-    members = [...members, newMember];
-    return organizationRepo.getMembers();
+  ): Promise<Role[] | null> {
+    const response = await fetch(`${BASE_URL}/organization`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ firstName, lastName, role }),
+    });
+
+    if (!response.ok) return null;
+    return response.json();
   },
 };
 

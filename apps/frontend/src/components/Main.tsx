@@ -1,20 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Department } from "../interfaces/Employee";
-import employeeRepo from "../repositories/employeeRepo";
 import employeeService from "../services/employeeService";
 import AddEmployeeForm from "./AddEmployeeForm";
 
 function Main() {
-  const [departmentList, setDepartmentList] = useState<Department[]>(
-    () => employeeRepo.getDepartments()
-  );
+  const [departmentList, setDepartmentList] = useState<Department[]>([]);
 
-  function handleAddEmployee(
+  useEffect(() => {
+    employeeService.getDepartments().then(setDepartmentList);
+  }, []);
+
+  async function handleAddEmployee(
     firstName: string,
     lastName: string,
     departmentName: string
   ) {
-    const result = employeeService.createEmployee(firstName, lastName, departmentName);
+    const result = await employeeService.createEmployee(
+      firstName,
+      lastName,
+      departmentName
+    );
 
     if (result.success && result.departments) {
       setDepartmentList(result.departments);

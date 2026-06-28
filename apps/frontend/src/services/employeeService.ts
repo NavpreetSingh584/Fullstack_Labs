@@ -11,20 +11,17 @@ export interface CreateEmployeeResult {
 }
 
 const employeeService = {
-  createEmployee(
+  async getDepartments(): Promise<Department[]> {
+    return employeeRepo.getDepartments();
+  },
+
+  async createEmployee(
     firstName: string,
     lastName: string,
     departmentName: string
-  ): CreateEmployeeResult {
+  ): Promise<CreateEmployeeResult> {
     const errors: CreateEmployeeResult["errors"] = {};
 
-    // Validation 1: department must exist
-    const department = employeeRepo.getDepartmentByName(departmentName);
-    if (!department) {
-      errors.department = [`Department "${departmentName}" does not exist.`];
-    }
-
-    // Validation 2: first name must be at least 3 characters
     if (firstName.trim().length < 3) {
       errors.firstName = ["First name must be at least 3 characters."];
     }
@@ -33,7 +30,7 @@ const employeeService = {
       return { success: false, errors };
     }
 
-    const updatedDepartments = employeeRepo.createEmployee(
+    const updatedDepartments = await employeeRepo.createEmployee(
       firstName.trim(),
       lastName.trim(),
       departmentName
